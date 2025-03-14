@@ -3971,6 +3971,8 @@ extern (C++) final class DelegateFuncptrExp : UnaExp
  */
 extern (C++) final class IndexExp : BinExp
 {
+    Expression lowering;
+
     VarDeclaration lengthVar;
     bool modifiable = false;    // assume it is an rvalue
     bool indexIsInBounds;       // true if 0 <= e2 && e2 <= e1.length - 1

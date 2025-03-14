@@ -3945,9 +3945,11 @@ elem* toElem(Expression e, ref IRState irs)
             elem* ti;
             if (ie.modifiable)
             {
-                n1 = el_una(OPaddr, TYnptr, n1);
-                s = getRtlsym(RTLSYM.AAGETY);
-                ti = getTypeInfo(ie.e1, taa.unSharedOf().mutableOf(), irs);
+                // n1 = el_una(OPaddr, TYnptr, n1);
+                // s = getRtlsym(RTLSYM.AAGETY);
+                // ti = getTypeInfo(ie.e1, taa.unSharedOf().mutableOf(), irs);
+                e = toElem(ie.lowering);
+                return e;
             }
             else
             {

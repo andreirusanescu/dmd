@@ -46,6 +46,7 @@ SRCS=\
 	src\core\internal\utf.d \
 	src\core\internal\lifetime.d \
 	\
+	src\core\internal\aa\aaA.d \
 	src\core\internal\array\appending.d \
 	src\core\internal\array\arrayassign.d \
 	src\core\internal\array\comparison.d \

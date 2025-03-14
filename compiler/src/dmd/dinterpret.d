@@ -5001,26 +5001,26 @@ public:
             printf("%s CommaExp::interpret() %s\n", e.loc.toChars(), e.toChars());
         }
 
-        bool isNewThrowableHook()
-        {
-            auto de = e.e1.isDeclarationExp();
-            if (de is null)
-                return false;
+        // bool isNewThrowableHook()
+        // {
+        //     auto de = e.e1.isDeclarationExp();
+        //     if (de is null)
+        //         return false;
 
-            auto vd = de.declaration.isVarDeclaration();
-            if (vd is null)
-                return false;
+        //     auto vd = de.declaration.isVarDeclaration();
+        //     if (vd is null)
+        //         return false;
 
-            auto ei = vd._init.isExpInitializer();
-            if (ei is null)
-                return false;
+        //     auto ei = vd._init.isExpInitializer();
+        //     if (ei is null)
+        //         return false;
 
-            auto ce = ei.exp.isConstructExp();
-            if (ce is null)
-                return false;
+        //     auto ce = ei.exp.isConstructExp();
+        //     if (ce is null)
+        //         return false;
 
-            return isRuntimeHook(ce.e2, Id._d_newThrowable) !is null;
-        }
+        //     return isRuntimeHook(ce.e2, Id._d_newThrowable) !is null;
+        // }
 
         if (auto ce = isRuntimeHook(e.e1, Id._d_arrayappendcTX))
         {

@@ -10065,6 +10065,25 @@ private extern (C++) final class ExpressionSemanticVisitor : Visitor
                 checkNewEscape(*sc, exp.e2, false);
 
                 exp.type = taa.next;
+
+                /** EU **/
+                uint vsize = cast(uint)taa.next.size();
+
+                Expression n2 = new AddrExp(exp.loc, exp.e2);
+
+                Expression[] args = [
+                    new IntegerExp(exp.loc, vsize, Type.tsize_t),
+                    n2,
+                    getTypeInfo(exp.e1, taa.index),
+                    exp.e1
+                ];
+
+                exp.lowering = new CallExp(
+                    exp.loc,
+                    new IdentifierExp(exp.loc, Id.__aaGetY),
+                    args
+                );
+
                 break;
             }
         case Ttuple:
@@ -10317,6 +10336,7 @@ private extern (C++) final class ExpressionSemanticVisitor : Visitor
         {
             //printf("line %d\n", line);
             result = e;
+
         }
 
         Expression e1old = exp.e1;
@@ -11680,6 +11700,7 @@ private extern (C++) final class ExpressionSemanticVisitor : Visitor
             if (auto ae2 = ce.e2.isAssignExp())
                 ce.e2 = lowerArrayAssign(ae2, true);
         }
+
 
         return setResult(res);
     }
