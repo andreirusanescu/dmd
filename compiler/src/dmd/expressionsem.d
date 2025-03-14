@@ -10067,22 +10067,25 @@ private extern (C++) final class ExpressionSemanticVisitor : Visitor
                 exp.type = taa.next;
 
                 /** EU **/
-                uint vsize = cast(uint)taa.next.size();
+                uint vsize = 0;
 
-                Expression n2 = new AddrExp(exp.loc, exp.e2);
+                Expression key = new AddrExp(exp.loc, exp.e2);
 
-                Expression[] args = [
-                    new IntegerExp(exp.loc, vsize, Type.tsize_t),
-                    n2,
-                    getTypeInfo(exp.e1, taa.index),
-                    exp.e1
-                ];
+                Expression lowering = new IdentifierExp(exp.loc, Id.empty);
+                lowering = new DotIdExp(exp.loc, lowering, Id.object);
+                // template instance arguments (i.e. what comes after '!')
+                auto tiargs = new Objects();
+                auto t = exp.type;
+                tiargs.push(t);
+                lowering = new DotTemplateInstanceExp(exp.loc, lowering, Id._aaGetY, tiargs);
 
-                exp.lowering = new CallExp(
-                    exp.loc,
-                    new IdentifierExp(exp.loc, Id.__aaGetY),
-                    args
-                );
+                auto arguments = new Expressions();
+                arguments.push(exp.e1);
+                arguments.push(new IntegerExp(exp.loc, vsize, Type.tsize_t));
+                arguments.push(key);
+
+                lowering = new CallExp(exp.loc, lowering, arguments);
+                exp.lowering = lowering.expressionSemantic(sc);
 
                 break;
             }
