@@ -417,6 +417,7 @@ extern (C) void* _aaGetX(scope AA* paa, const TypeInfo_AssociativeArray ti,
         aa = new Impl(ti);
         *paa = aa;
     }
+    import core.stdc.stdio:printf;
 
     // get hash and bucket for key
     immutable hash = calcHash(pkey, aa);

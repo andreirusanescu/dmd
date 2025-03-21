@@ -3951,17 +3951,18 @@ elem* toElem(Expression e, ref IRState irs)
 
                 // irs is the current scope (intermediate representation scope)
                 e = toElem(ie.lowering, irs);
-                return e;
+                // return e;
             }
             else
             {
                 s = getRtlsym(RTLSYM.AAGETRVALUEX);
                 ti = getTypeInfo(ie.e1, taa.index, irs);
+                elem* ep = el_params(n2, valuesize, ti, n1, null);
+                e = el_bin(OPcall, TYnptr, el_var(s), ep);
             }
             //printf("taa.index = %s\n", taa.index.toChars());
             //printf("ti:\n"); elem_print(ti);
-            elem* ep = el_params(n2, valuesize, ti, n1, null);
-            e = el_bin(OPcall, TYnptr, el_var(s), ep);
+            
             if (irs.arrayBoundsCheck())
             {
                 elem* n = el_same(e);

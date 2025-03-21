@@ -24,5 +24,7 @@ private extern (C) void* _aaGetX(scope AA* aa, const TypeInfo_AssociativeArray t
 void* _aaGetY(T)(scope T aa, const size_t valsz, scope const void* pkey) nothrow pure
 {
     bool found;
+    // printf("In __aaGetY: %p\n", pkey);
+    // printf("HAHAHAHAH\n");
     return _aaGetX(cast(AA*) &aa, cast(TypeInfo_AssociativeArray) typeid(T), valsz, pkey, found);
 }

@@ -10066,26 +10066,45 @@ private extern (C++) final class ExpressionSemanticVisitor : Visitor
 
                 exp.type = taa.next;
 
-                /** EU **/
-                uint vsize = 0;
+                if (!exp.modifiable) {
+                    printf("%s\n", exp.toChars());
+                    /** EU **/
+                    uint vsize = 0;
 
-                Expression key = new AddrExp(exp.loc, exp.e2);
+                    Expression lowering = new IdentifierExp(exp.loc, Id.empty);
+                    lowering = new DotIdExp(exp.loc, lowering, Id.object);
+                    // template instance arguments (i.e. what comes after '!')
+                    // auto tiargs = new Objects();
+                    // auto t = exp.type;
+                    // tiargs.push(t);
+                    lowering = new DotTemplateInstanceExp(exp.loc, lowering, Id._aaGetY, new Objects());
 
-                Expression lowering = new IdentifierExp(exp.loc, Id.empty);
-                lowering = new DotIdExp(exp.loc, lowering, Id.object);
-                // template instance arguments (i.e. what comes after '!')
-                auto tiargs = new Objects();
-                auto t = exp.type;
-                tiargs.push(t);
-                lowering = new DotTemplateInstanceExp(exp.loc, lowering, Id._aaGetY, tiargs);
+                    auto arguments = new Expressions();
+                    arguments.push(exp.e1);
+                    arguments.push(new IntegerExp(exp.loc, vsize, Type.tsize_t));
 
-                auto arguments = new Expressions();
-                arguments.push(exp.e1);
-                arguments.push(new IntegerExp(exp.loc, vsize, Type.tsize_t));
-                arguments.push(key);
+                    Expression e0;
+                    Expression key;
+                    // promote an rvalue RHS element to a temporary, it's passed by ref to _d_arraysetctor
+                    if (exp.e2.isLvalue)
+                    {
+                        key = new AddrExp(exp.loc, exp.e2);
+                    }
+                    else
+                    {
+                        auto vd = copyToTemp(STC.scope_, "__setctor", exp.e2);
+                        e0 = new DeclarationExp(vd.loc, vd).expressionSemantic(sc);
+                        auto varExp = new VarExp(vd.loc, vd).expressionSemantic(sc);
+                        key = new AddrExp(varExp.loc, varExp);
+                    }
+                
+                    arguments.push(key);
 
-                lowering = new CallExp(exp.loc, lowering, arguments);
-                exp.lowering = lowering.expressionSemantic(sc);
+                    lowering = new CallExp(exp.loc, lowering, arguments);
+                    printf("Before Semantic: %s\n", lowering.toChars());
+                    exp.lowering = lowering.expressionSemantic(sc);
+                    printf("After Semantic: %s\n", exp.lowering.toChars());
+                }
 
                 break;
             }
